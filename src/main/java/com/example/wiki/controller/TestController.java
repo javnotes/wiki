@@ -1,6 +1,7 @@
 package com.example.wiki.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -12,6 +13,11 @@ public class TestController {
 
     @GetMapping("/hello")
     public String hello() {
-        return "Hello, world!";
+        return "Hello, World!";
+    }
+
+    @PostMapping("/hello")
+    public String hello(String name) {
+        return "Hello world," + name;
     }
 }
