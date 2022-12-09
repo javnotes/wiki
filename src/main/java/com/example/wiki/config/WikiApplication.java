@@ -1,5 +1,6 @@
 package com.example.wiki.config;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -10,6 +11,7 @@ import org.springframework.core.env.Environment;
 /**
  * @author luf
  */
+@MapperScan("com.example.wiki.mapper")
 @ComponentScan("com.example")
 @SpringBootApplication
 public class WikiApplication {
