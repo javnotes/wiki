@@ -2,9 +2,8 @@ package com.example.wiki.mapper;
 
 import com.example.wiki.domain.Demo;
 import com.example.wiki.domain.DemoExample;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface DemoMapper {
     long countByExample(DemoExample example);
