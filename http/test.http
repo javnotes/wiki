@@ -20,4 +20,4 @@ name=wiki
 
 ###
 
-GET http://localhost:8080/hello/list
+GET http://localhost:8880/hello/list
