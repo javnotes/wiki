@@ -1,5 +1,8 @@
 package com.example.wiki.resp;
 
+/**
+ * 返回给前端的实体类中的属性，并不是与数据库中的字段一一对应的，而是根据业务需求，自己定义的。
+ */
 public class EbookResp {
     private Long id;
 
