@@ -65,4 +65,11 @@ public class EbookService {
 
         return pageResp;
     }
+
+    public List<EbookResp> all(EbookReq ebookReq) {
+        EbookExample ebookExample = new EbookExample();
+        List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
+        List<EbookResp> list = CopyUtil.copyList(ebookList, EbookResp.class);
+        return list;
+    }
 }
