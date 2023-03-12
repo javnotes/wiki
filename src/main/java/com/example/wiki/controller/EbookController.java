@@ -29,10 +29,27 @@ public class EbookController {
         return resp;
     }
 
+    /**
+     * 保存
+     * @param req
+     * @return
+     */
     @PostMapping("/save")
     public CommonResp save(@RequestBody EbookSaveReq req) {
         CommonResp resp = new CommonResp();
         ebookService.save(req);
+        return resp;
+    }
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/delete/{id}")
+    public CommonResp delete(@PathVariable Long id) {
+        CommonResp resp = new CommonResp<>();
+        ebookService.delete(id);
         return resp;
     }
 
