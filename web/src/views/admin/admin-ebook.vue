@@ -76,6 +76,7 @@
 <script lang="ts">
 import {defineComponent, onMounted, ref, reactive, toRef} from 'vue';
 import axios from 'axios';
+import {message} from "ant-design-vue";
 
 export default defineComponent({
   name: 'AdminEbook',
@@ -83,7 +84,7 @@ export default defineComponent({
     const ebooks = ref();
     const pagination = ref({
       current: 1,
-      pageSize: 4,
+      pageSize: 2,
       total: 0
     });
     const loading = ref(false);
@@ -136,6 +137,10 @@ export default defineComponent({
       }).then((response) => {
         loading.value = false;
         const data = response.data;
+        if (!data.success) {
+          message.error(data.message);
+          return;
+        }
         ebooks.value = data.content.list;
 
         // 重置分页按钮
@@ -232,13 +237,13 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.ant-avatar {
-  width: 50px;
-  height: 50px;
-  line-height: 50;
-  border-radius: 50%;
-  border-radius: 8%;
-  margin: 5px 0;
-}
-</style>
+<!--<style scoped>-->
+<!--.ant-avatar {-->
+<!--  width: 50px;-->
+<!--  height: 50px;-->
+<!--  line-height: 50;-->
+<!--  border-radius: 50%;-->
+<!--  border-radius: 8%;-->
+<!--  margin: 5px 0;-->
+<!--}-->
+<!--</style>-->
