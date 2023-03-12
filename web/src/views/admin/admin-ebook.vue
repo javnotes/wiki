@@ -3,6 +3,11 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
+      <p>
+        <a-button type="primary" @click="add()" size="large">
+          新增
+        </a-button>
+      </p>
 
       <a-table
           :columns="columns"
@@ -51,6 +56,9 @@
             :field-names="{ label: 'name', value: 'id', children: 'children' }"
             :options="level1"
         />
+      </a-form-item>
+      <a-form-item label="文档数">
+        <a-input v-model:value="ebook.docCount"/>
       </a-form-item>
       <a-form-item label="描述">
         <a-input v-model:value="ebook.description" type="textarea"/>
@@ -169,6 +177,13 @@ export default defineComponent({
       modalVisible.value = true;
       ebook.value = record;
     };
+    /**
+     * 新增
+     **/
+    const add = () => {
+      modalVisible.value = true;
+      ebook.value = {};
+    };
 
     onMounted(() => {
       handleQuery({
@@ -184,6 +199,7 @@ export default defineComponent({
       handleTableChange,
 
       edit,
+      add,
 
       ebook,
       modalVisible,
