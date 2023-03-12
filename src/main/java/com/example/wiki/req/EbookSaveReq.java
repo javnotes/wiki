@@ -1,5 +1,7 @@
 package com.example.wiki.req;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author luf
  * @description: 电子书保存请求类，用于接收前端传来的数据，然后传给service层，service层再传给dao层，dao层再传给数据库，最后返回给前端，前端再展示给用户，这就是一个完整的请求响应过程
@@ -9,6 +11,7 @@ package com.example.wiki.req;
 public class EbookSaveReq {
     private Long id;
 
+    @NotNull(message = "名称不能为空")
     private String name;
 
     private Long category1Id;

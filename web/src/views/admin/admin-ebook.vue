@@ -168,15 +168,18 @@ export default defineComponent({
     const handleModalOk = () => {
       modalLoading.value = true;
       axios.post("/ebook/save", ebook.value).then((response) => {
+        modalLoading.value = false;
         const data = response.data;
         if (data.success) {
-          modalLoading.value = false;
           modalVisible.value = false;
 
+          // 重新加载当前页
           handleQuery({
             page: pagination.value.current, // 当前页码,pagination为分组组件
             size: pagination.value.pageSize // 每页显示的条数
           });
+        } else {
+          message.error(data.message);
         }
       });
 
