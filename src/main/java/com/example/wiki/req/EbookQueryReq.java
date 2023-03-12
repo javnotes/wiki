@@ -4,7 +4,7 @@ package com.example.wiki.req;
  * @author luf
  * @date 2023/02/28 20:36
  **/
-public class EbookReq extends PageReq {
+public class EbookQueryReq extends PageReq {
 
     private Long id;
     private String name;

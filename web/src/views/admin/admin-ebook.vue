@@ -141,12 +141,25 @@ export default defineComponent({
     const ebook = ref({});
     const modalVisible = ref(false);
     const modalLoading = ref(false);
+
+    /**
+     * 编辑了进行保存
+     */
     const handleModalOk = () => {
       modalLoading.value = true;
-      setTimeout(() => {
-        modalLoading.value = false;
-        modalVisible.value = false;
-      }, 3000);
+      axios.post("/ebook/save", ebook.value).then((response) => {
+        const data = response.data;
+        if (data.success) {
+          modalLoading.value = false;
+          modalVisible.value = false;
+
+          handleQuery({
+            page: pagination.value.current, // 当前页码,pagination为分组组件
+            size: pagination.value.pageSize // 每页显示的条数
+          });
+        }
+      });
+
     };
 
     /**

@@ -1,9 +1,12 @@
-package com.example.wiki.resp;
+package com.example.wiki.req;
 
 /**
- * 返回给前端的实体类中的属性，并不是与数据库中的字段一一对应的，而是根据业务需求，自己定义的。
- */
-public class EbookResp {
+ * @author luf
+ * @description: 电子书保存请求类，用于接收前端传来的数据，然后传给service层，service层再传给dao层，dao层再传给数据库，最后返回给前端，前端再展示给用户，这就是一个完整的请求响应过程
+ * 此类的属性与数据库中的字段一一对应
+ * @date 2023/03/11 11:09
+ **/
+public class EbookSaveReq {
     private Long id;
 
     private String name;
