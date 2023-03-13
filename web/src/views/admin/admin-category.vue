@@ -25,7 +25,7 @@
       <a-table
           :columns="columns"
           :row-key="record => record.id"
-          :data-source="categorys"
+          :data-source="level1"
           :loading="loading"
           :pagination="false"
       >
@@ -113,6 +113,11 @@ export default defineComponent({
     ];
 
     /**
+     * 一级分类树，childen属性就是二级分类
+     */
+    const level1 = ref(); // 一级分类树
+
+    /**
      * 数据查询
      **/
     const handleQuery = () => {
@@ -126,7 +131,13 @@ export default defineComponent({
           message.error(data.message);
           return;
         }
-        categorys.value = data.content ;
+        categorys.value = data.content;
+        console.log("原始数组：", categorys.value);
+
+        level1.value = [];
+        // 递归获取所有分类
+        level1.value = Tool.array2Tree(categorys.value, 0);
+        console.log("树型结构：", level1);
       });
     };
 
@@ -187,7 +198,8 @@ export default defineComponent({
 
     return {
       param,
-      categorys,
+      // categorys,
+      level1,
       columns,
       handleQuery,
       handleModalOk,
