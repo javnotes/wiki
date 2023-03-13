@@ -139,6 +139,29 @@ export default defineComponent({
       }
     ];
 
+    const level1 = ref();
+    /**
+     * 查所有电子书分类
+     */
+    const handleQueryAllCategory = () => {
+      loading.value = true;
+      axios.get("/category/list").then((response) => {
+        loading.value = true;
+
+        const data = response.data;
+        if (!data.success) {
+          message.error(data.message);
+          return;
+        }
+        const categorys = data.content;
+        console.log("原始数组：", categorys);
+
+        level1.value = [];
+        level1.value = Tool.array2Tree(categorys, 0);
+        console.log("树型结构：", level1.value);
+      });
+    };
+
     /**
      * 数据查询
      **/
@@ -176,7 +199,8 @@ export default defineComponent({
     };
 
     // ----------表单相关----------
-    const ebook = ref({});
+    const categoryIds = ref();
+    const ebook = ref();
     const modalVisible = ref(false);
     const modalLoading = ref(false);
 
@@ -209,6 +233,7 @@ export default defineComponent({
     const edit = (record: any) => {
       modalVisible.value = true;
       ebook.value = Tool.copy(record);
+      categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id];
     };
     /**
      * 新增
@@ -233,6 +258,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
+      handleQueryAllCategory();
       handleQuery({
         page: 1,
         size: pagination.value.pageSize
@@ -248,11 +274,13 @@ export default defineComponent({
       handleQuery,
       handleModalOk,
       handleDel,
+      categoryIds,
+      ebook,
+      level1,
 
       edit,
       add,
 
-      ebook,
       modalVisible,
       modalLoading
     };
