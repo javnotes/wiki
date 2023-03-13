@@ -55,12 +55,10 @@ public class CategoryController {
     }
 
     @GetMapping("/all")
-    public CommonResp<List<CategoryQueryResp>> all(CategoryQueryReq categoryQueryReq) {
+    public CommonResp<List<CategoryQueryResp>> all() {
         CommonResp<List<CategoryQueryResp>> resp = new CommonResp<>();
-        List<CategoryQueryResp> list = categoryService.all(categoryQueryReq);
+        List<CategoryQueryResp> list = categoryService.all();
         resp.setContent(list);
         return resp;
     }
-
-
 }
