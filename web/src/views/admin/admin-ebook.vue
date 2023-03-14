@@ -63,7 +63,7 @@
   <a-modal
       title="电子书表单"
       v-model:visible="modalVisible"
-      :confirm-loading="ModalLoading"
+      :confirm-loading="modalLoading"
       @ok="handleModalOk"
   >
     <a-form :model="ebook" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
@@ -100,8 +100,8 @@ export default defineComponent({
   setup() {
     const param = ref();
     param.value = {};
-
     const ebooks = ref();
+
     const pagination = ref({
       current: 1,
       pageSize: 2,
@@ -141,39 +141,6 @@ export default defineComponent({
         slots: {customRender: 'action'}
       }
     ];
-
-    const level1 = ref();
-    let categorys: any;
-    /**
-     * 查所有电子书分类
-     */
-    const handleQueryAllCategory = () => {
-      loading.value = true;
-      axios.get("/category/all").then((response) => {
-        loading.value = false;
-        const data = response.data;
-        if (!data.success) {
-          message.error(data.message);
-          return;
-        }
-        categorys = data.content;
-        console.log("原始数组：", categorys);
-
-        level1.value = [];
-        level1.value = Tool.array2Tree(categorys, 0);
-        console.log("树型结构：", level1.value);
-      });
-    };
-
-    const getCategoryName = (cid: number) => {
-      let result = "";
-      categorys.forEach((item: any) => {
-        if (item.id === cid) {
-          result = item.name;
-        }
-      });
-      return result;
-    };
 
     /**
      * 数据查询
@@ -222,22 +189,63 @@ export default defineComponent({
      */
     const handleModalOk = () => {
       modalLoading.value = true;
+      ebook.value.category1Id = categoryIds.value[0];
+      ebook.value.category2Id = categoryIds.value[1];
       axios.post("/ebook/save", ebook.value).then((response) => {
         modalLoading.value = false;
-        const data = response.data;
+        const data = response.data; // data = commonResp
         if (data.success) {
           modalVisible.value = false;
 
-          // 重新加载当前页
+          // 重新加载列表
           handleQuery({
-            page: pagination.value.current, // 当前页码,pagination为分组组件
-            size: pagination.value.pageSize // 每页显示的条数
+            page: pagination.value.current,
+            size: pagination.value.pageSize,
           });
         } else {
           message.error(data.message);
         }
       });
+    };
 
+
+    const level1 = ref();
+    let categorys: any;
+    /**
+     * 查所有电子书分类
+     */
+    const handleQueryAllCategory = () => {
+      loading.value = true;
+      axios.get("/category/all").then((response) => {
+        loading.value = false;
+        const data = response.data;
+        if (!data.success) {
+          message.error(data.message);
+          return;
+        }
+        categorys = data.content;
+        console.log("原始数组：", categorys);
+
+        level1.value = [];
+        level1.value = Tool.array2Tree(categorys, 0);
+        console.log("树型结构：", level1.value);
+
+        // 加载完分类数据后，再去加载电子书，否则如果分类数据加载很慢，则电子书渲染会报错
+        handleQuery({
+          page: 1,
+          size: pagination.value.pageSize
+        });
+      });
+    };
+
+    const getCategoryName = (cid: number) => {
+      let result = "";
+      categorys.forEach((item: any) => {
+        if (item.id === cid) {
+          result = item.name;
+        }
+      });
+      return result;
     };
 
     /**
@@ -272,10 +280,6 @@ export default defineComponent({
 
     onMounted(() => {
       handleQueryAllCategory();
-      handleQuery({
-        page: 1,
-        size: pagination.value.pageSize
-      });
     });
 
     return {
@@ -283,14 +287,16 @@ export default defineComponent({
       ebooks,
       pagination,
       columns,
+      loading,
       handleTableChange,
       handleQuery,
+      getCategoryName,
+
       handleModalOk,
       handleDel,
       categoryIds,
       level1,
       ebook,
-      getCategoryName,
 
       edit,
       add,

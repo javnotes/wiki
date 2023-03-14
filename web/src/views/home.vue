@@ -12,7 +12,7 @@
             <span>欢迎</span>
           </router-link>
         </a-menu-item>
-        <a-sub-menu v-for="item in level1" :key="item.id" :disabled="true">
+        <a-sub-menu v-for="item in level1" :key="item.id">
           <template v-slot:title>
             <span><user-outlined/>{{ item.name }}</span>
           </template>
@@ -68,7 +68,7 @@ export default defineComponent({
     /**
      * 查询所有分类
      */
-    const handleQueryCategory = () => {
+    const handleQueryAllCategory = () => {
       axios.get("/category/all").then((response) => {
         const data = response.data;
         if (!data.success) {
@@ -90,7 +90,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      handleQueryCategory();
+      handleQueryAllCategory();
       axios.get("/ebook/list", {
         params: {
           page: 1,
@@ -127,8 +127,7 @@ export default defineComponent({
 .ant-avatar {
   width: 50px;
   height: 50px;
-  line-height: 50;
-  border-radius: 50%;
+  line-height: 50px;
   border-radius: 8%;
   margin: 5px 0;
 }
