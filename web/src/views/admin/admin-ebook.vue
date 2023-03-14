@@ -33,6 +33,9 @@
         <template #cover="{ text: cover }">
           <img v-if="cover" :src="cover" alt="avatar"/>
         </template>
+        <template v-slot:category="{ text, record }">
+          <span>{{ getCategoryName(record.category1Id) }} / {{ getCategoryName(record.category2Id) }}</span>
+        </template>
         <template v-slot:action="{ text, record }">
           <a-space size="small">
             <a-button type="primary" @click="edit(record)">
@@ -140,26 +143,36 @@ export default defineComponent({
     ];
 
     const level1 = ref();
+    let categorys: any;
     /**
      * 查所有电子书分类
      */
     const handleQueryAllCategory = () => {
       loading.value = true;
-      axios.get("/category/list").then((response) => {
-        loading.value = true;
-
+      axios.get("/category/all").then((response) => {
+        loading.value = false;
         const data = response.data;
         if (!data.success) {
           message.error(data.message);
           return;
         }
-        const categorys = data.content;
+        categorys = data.content;
         console.log("原始数组：", categorys);
 
         level1.value = [];
         level1.value = Tool.array2Tree(categorys, 0);
         console.log("树型结构：", level1.value);
       });
+    };
+
+    const getCategoryName = (cid: number) => {
+      let result = "";
+      categorys.forEach((item: any) => {
+        if (item.id === cid) {
+          result = item.name;
+        }
+      });
+      return result;
     };
 
     /**
@@ -275,8 +288,9 @@ export default defineComponent({
       handleModalOk,
       handleDel,
       categoryIds,
-      ebook,
       level1,
+      ebook,
+      getCategoryName,
 
       edit,
       add,
