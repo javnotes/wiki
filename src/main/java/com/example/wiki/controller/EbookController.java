@@ -22,6 +22,9 @@ public class EbookController {
     @Resource
     private EbookService ebookService;
 
+    /**
+     * Spring 会将请求参数自动封装到 EbookQueryReq 对象中，这个对象的属性名必须和请求参数名一致，否则无法自动封装，这里的 @Valid 注解是用来校验请求参数的
+     */
     @GetMapping("/list")
     public CommonResp<PageResp<EbookQueryResp>> list(@Valid EbookQueryReq ebookQueryReq) {
         CommonResp<PageResp<EbookQueryResp>> resp = new CommonResp<>();
