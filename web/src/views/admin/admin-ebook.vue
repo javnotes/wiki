@@ -38,7 +38,8 @@
         </template>
         <template v-slot:action="{ text, record }">
           <a-space size="small">
-            <router-link to="/admin/doc">
+            <router-link :to="'/admin/doc?ebookId=' + record.id">
+              <!-- :to动态变量，record就是当前这一行文档的所有数据-->
               <a-button type="primary">
                 文档管理
               </a-button>
@@ -99,6 +100,7 @@ import {defineComponent, onMounted, ref, reactive, toRef} from 'vue';
 import axios from 'axios';
 import {message} from "ant-design-vue";
 import {Tool} from "@/util/tool";
+import {useRoute} from "vue-router";
 
 export default defineComponent({
   name: 'AdminEbook',

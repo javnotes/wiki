@@ -89,10 +89,17 @@ import {defineComponent, onMounted, ref, reactive, toRef} from 'vue';
 import axios from 'axios';
 import {message} from "ant-design-vue";
 import {Tool} from "@/util/tool";
+import {useRoute} from "vue-router";
 
 export default defineComponent({
   name: 'AdminDoc',
   setup() {
+    const route = useRoute();
+    console.log("route", route);
+    console.log("route.query", route.query);
+    console.log("route.query.ebookId", route.query.ebookId);
+
+
     const param = ref();
     param.value = {};
 
@@ -175,27 +182,25 @@ export default defineComponent({
           message.error(data.message);
         }
       });
-
     };
-
 
     /**
      * 因为如果是编辑，则需要将当前节点及其子孙节点置为 disabled
+     * 即当前节点及其子孙节点作为一个整体
      */
     const setDisabled = (treeSelectData: any, id: any) => {
       // 遍历数组，即遍历某一层节点
       for (let i = 0; i < treeSelectData.length; i++) {
         const node = treeSelectData[i];
-        if (node.id === id) {
+        if (node.id === id) { // 如果是当前节点，则置为 disabled
           node.disabled = true;
-          const children = node.children;
-          if (Tool.isNotEmpty(children)) {
-            // 如果所有子节点都是 disabled，则当前节点也置为 disabled
-            for (let j = 0; j < children.length; j++) {
+          const children = node.children; // 获取子节点
+          if (Tool.isNotEmpty(children)) { // 如果有子节点，则递归
+            for (let j = 0; j < children.length; j++) { //树的同一个层级的节点，id是不会重复的
               setDisabled(children, children[j].id);
             }
           }
-        } else {
+        } else { // 如果不是当前节点，则递归
           const children = node.children;
           if (Tool.isNotEmpty(children)) {
             setDisabled(children, id);
@@ -203,7 +208,6 @@ export default defineComponent({
         }
       }
     };
-
 
     /**
      * 编辑
@@ -229,7 +233,9 @@ export default defineComponent({
      **/
     const add = () => {
       modalVisible.value = true;
-      doc.value = {};
+      doc.value = {
+        ebookId: route.query.ebookId
+      };
 
       treeSelectData.value = Tool.copy(level1.value);
       //为选择树添加一个『无』
@@ -239,6 +245,7 @@ export default defineComponent({
         disabled: false
       });
     };
+
     /**
      * 删除
      **/
