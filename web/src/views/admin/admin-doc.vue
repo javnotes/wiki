@@ -3,7 +3,7 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      <a-row>
+      <a-row :guter="24">
         <a-col :span="8">
           <p>
             <a-form layout="inline" :model="param">
