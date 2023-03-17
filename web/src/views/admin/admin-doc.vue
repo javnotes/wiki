@@ -221,7 +221,7 @@ export default defineComponent({
       treeSelectData.value = Tool.copy(level1.value);
       setDisabled(treeSelectData.value, record.id);
 
-      //为选择树添加一个『无』
+      //为选择树添加一个『无』，treeSelectData 是选项下拉框的数据，所以需要在这里添加
       treeSelectData.value.unshift({
         id: 0,
         name: "无",
@@ -246,17 +246,52 @@ export default defineComponent({
       });
     };
 
+    const ids: Array<string> = [];
+
+    /**
+     * 查找整根树枝，获取选中的节点及其子孙节点的id
+     */
+    const getDeteleIds = (treeSelectData: any, id: any) => {
+      // 遍历数组，即遍历某一层节点
+      for (let i = 0; i < treeSelectData.length; i++) {
+        const node = treeSelectData[i];
+        if (node.id === id) {
+          ids.push(id); // 如果是当前节点，则将其id加入到数组中
+          const children = node.children; // 获取子节点
+          if (Tool.isNotEmpty(children)) { // 如果有子节点，则递归
+            for (let j = 0; j < children.length; j++) { //树的同一个层级的节点，id是不会重复的
+              getDeteleIds(children, children[j].id);
+            }
+          }
+        } else { // 如果不是当前节点，则递归
+          const children = node.children;
+          if (Tool.isNotEmpty(children)) {
+            getDeteleIds(children, id);
+          }
+        }
+      }
+    };
+
     /**
      * 删除
      **/
     const handleDel = (id: number) => {
-      axios.delete("/doc/delete/" + id).then((response) => {
+      //每次删除前，都要清空数组，否则会累加，导致删除的数据不正确，因为是全局变量，所以每次都要清空
+      ids.length = 0;
+      //level1.value 表格里的数据，treeSelectData是下拉框里的数据
+      console.log("开始比对");
+      console.log(treeSelectData);
+      console.log(level1);
+      console.log(level1.value);
+      getDeteleIds(level1.value, id);
+      axios.delete("/doc/delete/" + ids.join(",")).then((response) => {
         const data = response.data;
         if (data.success) { // 删除成功，重新加载当前列表
           handleQuery();
         }
       });
     };
+
 
     onMounted(() => {
       handleQuery();
