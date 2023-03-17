@@ -72,23 +72,28 @@
             <a-form-item label="顺序">
               <a-input v-model:value="doc.sort"/>
             </a-form-item>
+
+            <a-form-item  label="内容">
+              <div id="content"></div>
+            </a-form-item>
+
           </a-form>
         </a-col>
       </a-row>
 
-<!--      <div class="about">-->
-<!--        <h1>文档管理</h1>-->
-<!--      </div>-->
+      <!--      <div class="about">-->
+      <!--        <h1>文档管理</h1>-->
+      <!--      </div>-->
     </a-layout-content>
   </a-layout>
 
-<!--  <a-modal-->
-<!--      title="文档表单"-->
-<!--      v-model:visible="modalVisible"-->
-<!--      :confirm-loading="ModalLoading"-->
-<!--      @ok="handleModalOk"-->
-<!--  >-->
-<!--  </a-modal>-->
+  <!--  <a-modal-->
+  <!--      title="文档表单"-->
+  <!--      v-model:visible="modalVisible"-->
+  <!--      :confirm-loading="ModalLoading"-->
+  <!--      @ok="handleModalOk"-->
+  <!--  >-->
+  <!--  </a-modal>-->
 </template>
 <script lang="ts">
 import {defineComponent, onMounted, ref, reactive, toRef, createVNode} from 'vue';
@@ -96,7 +101,8 @@ import axios from 'axios';
 import {message, Modal} from "ant-design-vue";
 import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
-import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import {ExclamationCircleOutlined} from '@ant-design/icons-vue';
+import E from 'wangeditor'
 
 export default defineComponent({
   name: 'AdminDoc',
@@ -171,6 +177,7 @@ export default defineComponent({
     const doc = ref({});
     const modalVisible = ref(false);
     const modalLoading = ref(false);
+    const editor = new E('#content');
 
     /**
      * 编辑了进行保存
@@ -234,6 +241,10 @@ export default defineComponent({
         name: "无",
         disabled: false
       });
+
+      setTimeout(function () {
+        editor.create();
+      }, 100);
     };
     /**
      * 新增
@@ -251,6 +262,10 @@ export default defineComponent({
         name: "无",
         disabled: false
       });
+
+      setTimeout(function () {
+        editor.create();
+      }, 100);
     };
 
     const deleteIds: Array<string> = [];
@@ -308,8 +323,6 @@ export default defineComponent({
           });
         },
       });
-
-
     };
 
 
