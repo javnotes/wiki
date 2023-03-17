@@ -1,7 +1,9 @@
 package com.example.wiki.service;
 
+import com.example.wiki.domain.Content;
 import com.example.wiki.domain.Doc;
 import com.example.wiki.domain.DocExample;
+import com.example.wiki.mapper.ContentMapper;
 import com.example.wiki.mapper.DocMapper;
 import com.example.wiki.req.DocQueryReq;
 import com.example.wiki.req.DocSaveReq;
@@ -29,6 +31,9 @@ public class DocService {
     private static final Logger logger = LoggerFactory.getLogger(DocService.class);
     @Resource
     private DocMapper docMapper;
+
+    @Resource
+    ContentMapper contentMapper;
 
     @Resource
     private SnowFlake snowFlake;
@@ -62,18 +67,29 @@ public class DocService {
     }
 
     /**
-     * 保存：新增 or 更新
+     * 保存文档：新增 or 更新
      *
      * @param req
      */
     public void save(DocSaveReq req) {
+        // 只复制Doc实体的属性
         Doc doc = CopyUtil.copy(req, Doc.class);
+        // 只复制content实体的属性，id、content，注意doc.id=content.id
+        Content content = CopyUtil.copy(req, Content.class);
 
+        // 新增文档
         if (ObjectUtils.isEmpty(req.getId())) {
             doc.setId(snowFlake.nextId());
             docMapper.insert(doc);
+            content.setId(doc.getId());
+            contentMapper.insert(content);
         } else {
+            // 更新文档
             docMapper.updateByPrimaryKey(doc);
+            int count = contentMapper.updateByPrimaryKeyWithBLOBs(content);
+            if (count == 0) { // 说明content表中本来没有数据，需要新增
+                contentMapper.insert(content);
+            }
         }
     }
 

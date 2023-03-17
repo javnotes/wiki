@@ -2,6 +2,10 @@ package com.example.wiki.req;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * SaveReq与表中实体不是完全一致，这里就多了一个content字段
+ * 可以根据实际情况进行增加或减少字段
+ */
 public class DocSaveReq {
     private Long id;
 
@@ -20,6 +24,31 @@ public class DocSaveReq {
     private Integer viewCount;
 
     private Integer voteCount;
+
+    @Override
+    public String toString() {
+        return "DocSaveReq{" +
+                "id=" + id +
+                ", ebookId=" + ebookId +
+                ", parent=" + parent +
+                ", name='" + name + '\'' +
+                ", sort=" + sort +
+                ", viewCount=" + viewCount +
+                ", voteCount=" + voteCount +
+                ", content='" + content + '\'' +
+                '}';
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    @NotNull(message = "内容不能为空")
+    private String content;
 
     public Long getId() {
         return id;
@@ -77,20 +106,4 @@ public class DocSaveReq {
         this.voteCount = voteCount;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", ebookId=").append(ebookId);
-        sb.append(", parent=").append(parent);
-        sb.append(", name=").append(name);
-        sb.append(", sort=").append(sort);
-        sb.append(", viewCount=").append(viewCount);
-        sb.append(", voteCount=").append(voteCount);
-        sb.append("]");
-        return sb.toString();
-    }
 }

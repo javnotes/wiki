@@ -24,15 +24,17 @@
             </a-form>
           </p>
           <a-table
+              v-if="level1.length > 0"
               :columns="columns"
               :row-key="record => record.id"
               :data-source="level1"
               :loading="loading"
               :pagination="false"
               size="small"
+              :defaultExpandAllRows="true"
           >
             <template #name="{ text, record }">
-              {{record.sort}} {{text}}
+              {{ record.sort }} {{ text }}
             </template>
             <template v-slot:action="{ text, record }">
               <a-space size="small">
@@ -146,6 +148,7 @@ export default defineComponent({
      * 一级文档树，childen属性就是二级文档
      */
     const level1 = ref(); // 一级文档树
+    level1.value = []; // 初始化，避免null.length
 
     /**
      * 数据查询
@@ -175,7 +178,9 @@ export default defineComponent({
     //因为树选择组件的属性状态，会随当前编辑的节点而变化，所以需要单独声明一个响应式变量
     const treeSelectData = ref();
     treeSelectData.value = [];
-    const doc = ref({});
+    // const doc = ref({}); 空对象
+    const doc = ref();
+    doc.value = {};//赋值为空对象
     const modalVisible = ref(false);
     const modalLoading = ref(false);
     const editor = new E('#content');
@@ -186,6 +191,11 @@ export default defineComponent({
      */
     const handleSave = () => {
       modalLoading.value = true;
+      // 保存富文本内容，通过给doc新增一个content属性，将富文本内容保存到该属性中。
+      // 注意：这里的doc是响应式变量，所以可以直接新增属性。这里设置属性名为content，是为了和后端实体属性名保持一致，参数映射。
+      // 先清空富文本框，因为富文本框的内容是异步加载的，可能会保存了之前点击的其他文档的内容
+      editor.txt.html("");
+      doc.value.content = editor.txt.html();
       axios.post("/doc/save", doc.value).then((response) => {
         modalLoading.value = false;
         const data = response.data;
@@ -248,6 +258,7 @@ export default defineComponent({
      * 新增
      **/
     const add = () => {
+      editor.txt.html("");
       modalVisible.value = true;
       doc.value = {
         ebookId: route.query.ebookId
