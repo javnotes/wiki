@@ -85,11 +85,12 @@
   </a-modal>
 </template>
 <script lang="ts">
-import {defineComponent, onMounted, ref, reactive, toRef} from 'vue';
+import {defineComponent, onMounted, ref, reactive, toRef, createVNode} from 'vue';
 import axios from 'axios';
-import {message} from "ant-design-vue";
+import {message, Modal} from "ant-design-vue";
 import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 
 export default defineComponent({
   name: 'AdminDoc',
@@ -246,8 +247,8 @@ export default defineComponent({
       });
     };
 
-    const ids: Array<string> = [];
-
+    const deleteIds: Array<string> = [];
+    const deleteNames: Array<string> = [];
     /**
      * 查找整根树枝，获取选中的节点及其子孙节点的id
      */
@@ -256,7 +257,8 @@ export default defineComponent({
       for (let i = 0; i < treeSelectData.length; i++) {
         const node = treeSelectData[i];
         if (node.id === id) {
-          ids.push(id); // 如果是当前节点，则将其id加入到数组中
+          deleteIds.push(id); // 如果是当前节点，则将其id加入到数组中
+          deleteNames.push(node.name); // 如果是当前节点，则将其name加入到数组中
           const children = node.children; // 获取子节点
           if (Tool.isNotEmpty(children)) { // 如果有子节点，则递归
             for (let j = 0; j < children.length; j++) { //树的同一个层级的节点，id是不会重复的
@@ -277,19 +279,31 @@ export default defineComponent({
      **/
     const handleDel = (id: number) => {
       //每次删除前，都要清空数组，否则会累加，导致删除的数据不正确，因为是全局变量，所以每次都要清空
-      ids.length = 0;
+      deleteIds.length = 0;
+      deleteNames.length = 0;
       //level1.value 表格里的数据，treeSelectData是下拉框里的数据
-      console.log("开始比对");
-      console.log(treeSelectData);
-      console.log(level1);
-      console.log(level1.value);
+      // console.log("开始比对");
+      // console.log(treeSelectData);
+      // console.log(level1);
+      // console.log(level1.value);
       getDeteleIds(level1.value, id);
-      axios.delete("/doc/delete/" + ids.join(",")).then((response) => {
-        const data = response.data;
-        if (data.success) { // 删除成功，重新加载当前列表
-          handleQuery();
-        }
+      Modal.confirm({
+        title: '重要提醒',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '将删除：【' + deleteNames.join("，") + "】删除后不可恢复，确认删除？",
+        onOk() {
+          axios.delete("/doc/delete/" + deleteIds.join(",")).then((response) => {
+            const data = response.data;
+            if (data.success) { // 删除成功，重新加载当前列表
+              handleQuery();
+            } else {
+              message.error(data.message);
+            }
+          });
+        },
       });
+
+
     };
 
 
