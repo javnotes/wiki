@@ -181,13 +181,13 @@ export default defineComponent({
     // const doc = ref({}); 空对象
     const doc = ref();
     doc.value = {};//赋值为空对象
-    const modalVisible = ref(false);
+    // const modalVisible = ref(false);
     const modalLoading = ref(false);
     const editor = new E('#content');
     editor.config.zIndex = 0;
 
     /**
-     * 编辑了进行保存
+     * (编辑后进行)保存
      */
     const handleSave = () => {
       modalLoading.value = true;
@@ -199,8 +199,8 @@ export default defineComponent({
         modalLoading.value = false;
         const data = response.data;
         if (data.success) {
-          modalVisible.value = false;
-
+          // modalVisible.value = false;
+          message.success("保存成功");
           // 重新加载当前页
           handleQuery();
         } else {
@@ -240,7 +240,7 @@ export default defineComponent({
     const edit = (record: any) => {
       // 为了避免编辑时，富文本框的内容是上一次点击的文档的内容，所以先清空富文本框
       editor.txt.html("");
-      modalVisible.value = true;
+      // modalVisible.value = true;
       doc.value = Tool.copy(record);
       handleQueryContent();
 
@@ -261,7 +261,7 @@ export default defineComponent({
      **/
     const add = () => {
       editor.txt.html("");
-      modalVisible.value = true;
+      // modalVisible.value = true;
       doc.value = {
         ebookId: route.query.ebookId
       };
@@ -367,7 +367,7 @@ export default defineComponent({
       add,
 
       doc,
-      modalVisible,
+      // modalVisible,
       modalLoading,
 
       treeSelectData
