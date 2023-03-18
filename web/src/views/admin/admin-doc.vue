@@ -85,17 +85,25 @@
               <a-input v-model:value="doc.sort" placeholder="顺序"/>
             </a-form-item>
 
+            <a-form-item>
+              <a-button type="primary" @click="handlePreviewContent()">
+                <EyeOutlined/>
+                内容预览
+              </a-button>
+            </a-form-item>
+
             <a-form-item label="内容">
               <div id="content"></div>
             </a-form-item>
-
           </a-form>
         </a-col>
       </a-row>
 
-      <!--      <div class="about">-->
-      <!--        <h1>文档管理</h1>-->
-      <!--      </div>-->
+      <!--显示previewHtml，使用了同一个style wangeditor，即与doc.vue中的样式相同-->
+      <a-drawer width="900" placement="right" :closable="false" :visible="drawerVisible" @close="onDrawerClose">
+        <div class="wangeditor" :innerHTML="previewHtml"></div>
+      </a-drawer>
+
     </a-layout-content>
   </a-layout>
 
@@ -214,6 +222,7 @@ export default defineComponent({
         }
       });
     };
+
 
     /**
      * 因为如果是编辑，则需要将当前节点及其子孙节点置为 disabled
@@ -355,6 +364,17 @@ export default defineComponent({
       });
     };
 
+    // ----------------富文本预览--------------
+    const drawerVisible = ref(false);
+    const previewHtml = ref();
+    const handlePreviewContent = () => {
+      const html = editor.txt.html();
+      previewHtml.value = html;
+      drawerVisible.value = true;
+    };
+    const onDrawerClose = () => {
+      drawerVisible.value = false;
+    };
 
     onMounted(() => {
       handleQuery();
@@ -376,7 +396,13 @@ export default defineComponent({
       // modalVisible,
       modalLoading,
 
-      treeSelectData
+      treeSelectData,
+
+      drawerVisible,
+      previewHtml,
+      handlePreviewContent,
+      onDrawerClose,
+
     };
   }
 })
