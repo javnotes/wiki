@@ -131,6 +131,10 @@ export default defineComponent({
     const docs = ref();
     const loading = ref(false);
 
+    //因为树选择组件的属性状态，会随当前编辑的节点而变化，所以需要单独声明一个响应式变量
+    const treeSelectData = ref();
+    treeSelectData.value = [];
+
     const columns = [
       {
         title: '名称',
@@ -157,7 +161,7 @@ export default defineComponent({
       loading.value = true;
       // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
       level1.value = [];
-      axios.get("/doc/all" + route.query.ebookId).then((response) => {
+      axios.get("/doc/all/" + route.query.ebookId).then((response) => {
         loading.value = false;
         const data = response.data;
         if (!data.success) {
@@ -171,13 +175,15 @@ export default defineComponent({
         // 递归获取所有文档
         level1.value = Tool.array2Tree(docs.value, 0);
         console.log("树型结构：", level1);
+
+        // 初始化父文档下拉框，使其默认显示数据
+        treeSelectData.value = Tool.copy(level1.value);
+        //为选择树添加一个『无』，treeSelectData 是选项下拉框的数据，所以需要在这里添加
+        treeSelectData.value.unshift({id: 0, name: "无"});
       });
     };
 
     // ----------表单相关----------
-    //因为树选择组件的属性状态，会随当前编辑的节点而变化，所以需要单独声明一个响应式变量
-    const treeSelectData = ref();
-    treeSelectData.value = [];
     // const doc = ref({}); 空对象
     const doc = ref();
     doc.value = {};//赋值为空对象
