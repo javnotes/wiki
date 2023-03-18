@@ -388,6 +388,7 @@ export default defineComponent({
       handleQuery,
       handleSave,
       handleDel,
+      loading,
 
       edit,
       add,
