@@ -34,6 +34,7 @@ public class DocController {
 
     /**
      * 保存
+     *
      * @param req
      * @return
      */
@@ -68,10 +69,14 @@ public class DocController {
         return resp;
     }
 
-    @GetMapping("/all")
-    public CommonResp<List<DocQueryResp>> all() {
+    /**
+     * 查找指定电子书的文档，没有指定电子书(ebookId=null)，则不查
+     * {ebookId} 为路径参数，@PathVariable 用于接收路径参数，与@PathVariable Long ebookId 名称一致，才可自动映射
+     */
+    @GetMapping("/all/{ebookId}")
+    public CommonResp<List<DocQueryResp>> all(@PathVariable Long ebookId) {
         CommonResp<List<DocQueryResp>> resp = new CommonResp<>();
-        List<DocQueryResp> list = docService.all();
+        List<DocQueryResp> list = docService.all(ebookId);
         resp.setContent(list);
         return resp;
     }

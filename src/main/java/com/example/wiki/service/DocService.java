@@ -57,8 +57,15 @@ public class DocService {
         return pageResp;
     }
 
-    public List<DocQueryResp> all() {
+
+    /**
+     * ebookId为null，则查不到数据，可防止查出数据表中所有数据
+     * @param ebookId
+     * @return
+     */
+    public List<DocQueryResp> all(Long ebookId) {
         DocExample docExample = new DocExample();
+        docExample.createCriteria().andEbookIdEqualTo(ebookId);
         docExample.setOrderByClause("sort asc");
         List<Doc> docList = docMapper.selectByExample(docExample);
         // 列表复制
