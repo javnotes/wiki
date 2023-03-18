@@ -13,6 +13,8 @@
           </a-tree>
         </a-col>
         <a-col :span="18">
+          <!--普通的html，与wangEditor无关-->
+          <div :innerHTML="html"></div>
         </a-col>
       </a-row>
     </a-layout-concent>
@@ -32,7 +34,7 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const docs = ref();
-    // const html = ref();
+    const html = ref();
     // const defaultSelectedKeys = ref();
     // defaultSelectedKeys.value = [];
     // // 当前选中的文档
@@ -71,12 +73,43 @@ export default defineComponent({
       });
     };
 
+    /**
+     * 内容查询
+     **/
+    const handleQueryContent = (id: number) => {
+      axios.get("/doc/find-content/" + id).then((response) => {
+        const data = response.data;
+        if (data.success) {
+          html.value = data.content;
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+
+    /**
+     * 选中某一节点时，加载该节点的文档信息
+     * @param selectedKeys 当前选中的节点，数组，树形组件支持多选
+     * @param info
+     */
+    const onSelect = (selectedKeys: any, info: any) => {
+      console.log('selected', selectedKeys, info);
+      if (Tool.isNotEmpty(selectedKeys)) {
+        // 选中某一节点时，加载该节点的文档信息
+        // doc.value = info.selectedNodes[0].props;
+        // 加载内容
+        handleQueryContent(selectedKeys[0]);
+      }
+    };
+
     onMounted(() => {
       handleQuery();
     });
 
     return {
       level1,
+      html,
+      onSelect
     }
   }
 });
