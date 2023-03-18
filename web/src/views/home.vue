@@ -40,7 +40,11 @@
             </template>
             <a-list-item-meta :description="item.description">
               <template #title>
-                <a :href="item.href">{{ item.name }}</a>
+                <!-- <a :href="item.href">{{ item.name }}</a>-->
+                <!--使用router-link 在页面内跳转， ebookId=item.id-->
+                <router-link :to="'/doc?ebookId=' + item.id">
+                  {{ item.name }}
+                </router-link>
               </template>
               <template #avatar>
                 <a-avatar :src="item.cover"/>
