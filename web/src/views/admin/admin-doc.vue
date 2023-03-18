@@ -194,7 +194,9 @@ export default defineComponent({
     // ----------表单相关----------
     // const doc = ref({}); 空对象
     const doc = ref();
-    doc.value = {};//赋值为空对象
+    doc.value = {
+      ebookId: route.query.ebookId,
+    };
     // const modalVisible = ref(false);
     const modalLoading = ref(false);
     const editor = new E('#content');
@@ -277,9 +279,9 @@ export default defineComponent({
     const add = () => {
       editor.txt.html("");
       // modalVisible.value = true;
-      doc.value = {
-        ebookId: route.query.ebookId
-      };
+      // doc.value = {
+      //   ebookId: route.query.ebookId
+      // };
 
       treeSelectData.value = Tool.copy(level1.value);
       //为选择树添加一个『无』
