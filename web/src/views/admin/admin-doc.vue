@@ -194,7 +194,6 @@ export default defineComponent({
       // 保存富文本内容，通过给doc新增一个content属性，将富文本内容保存到该属性中。
       // 注意：这里的doc是响应式变量，所以可以直接新增属性。这里设置属性名为content，是为了和后端实体属性名保持一致，参数映射。
       // 先清空富文本框，因为富文本框的内容是异步加载的，可能会保存了之前点击的其他文档的内容
-      editor.txt.html("");
       doc.value.content = editor.txt.html();
       axios.post("/doc/save", doc.value).then((response) => {
         modalLoading.value = false;
@@ -236,11 +235,14 @@ export default defineComponent({
     };
 
     /**
-     * 编辑
+     * 编辑，点击编辑按钮时，doc.value被赋值，然后handleQueryContent()根据doc.value.id去查询文档内容
      **/
     const edit = (record: any) => {
+      // 为了避免编辑时，富文本框的内容是上一次点击的文档的内容，所以先清空富文本框
+      editor.txt.html("");
       modalVisible.value = true;
       doc.value = Tool.copy(record);
+      handleQueryContent();
 
       //不能选择当前节点及其所有子孙接一单，所以需要将这些节点置为 disabled
       //因为作为父节点，会使树断枝
@@ -270,6 +272,23 @@ export default defineComponent({
         id: 0,
         name: "无",
         disabled: false
+      });
+    };
+
+    /**
+     * 文档内容查询，点击编辑按钮时，查询文档内容
+     **/
+    const handleQueryContent = () => {
+      // 此处注意，得先让doc.value.id有值，才能传给后端
+      axios.get("/doc/find-content/" + doc.value.id).then((response) => {
+        const data = response.data;
+        if (!data.success) {
+          message.error(data.message);
+          return;
+        }
+        // 将富文本内容显示到编辑器中
+        console.log("data.content", data.content);
+        editor.txt.html(data.content);
       });
     };
 

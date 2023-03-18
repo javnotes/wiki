@@ -87,7 +87,8 @@ public class DocService {
             // 更新文档
             docMapper.updateByPrimaryKey(doc);
             int count = contentMapper.updateByPrimaryKeyWithBLOBs(content);
-            if (count == 0) { // 说明content表中本来没有数据，需要新增
+            if (count == 0) {
+                // 说明content表中本来没有数据，需要新增
                 contentMapper.insert(content);
             }
         }
@@ -103,5 +104,18 @@ public class DocService {
         DocExample.Criteria criteria = docExample.createCriteria();
         criteria.andIdIn(idsStr);
         docMapper.deleteByExample(docExample);
+    }
+
+    /**
+     * 根据id查询文档内容Content(Long id,String content)
+     */
+    public String findContent(Long id) {
+        Content content = contentMapper.selectByPrimaryKey(id);
+        // 判断content是否为空，凡是返回值为对象的方法，都要判断是否为空，避免空指针异常
+        if (ObjectUtils.isEmpty(content)) {
+            return "";
+        } else {
+            return content.getContent();
+        }
     }
 }
