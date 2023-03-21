@@ -85,8 +85,10 @@ public class UserService {
                 throw new BusinessException(BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
             }
         } else {
+            // 这种是仅更新用户资料信息，如：昵称、头像等
             // 更新,用户名不可更新，所以设置为空，防止被更新
             user.setLoginName(null);
+            user.setPassword(null);
             userMapper.updateByPrimaryKeySelective(user);
         }
     }
