@@ -78,6 +78,7 @@
       :confirm-loading="resetModalLoading"
       @ok="handleResetModalOk"
   >
+
     <a-form :model="user" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
       <a-form-item label="新密码">
         <a-input v-model:value="user.password" type="password"/>
@@ -230,7 +231,6 @@ export default defineComponent({
     const resetModalLoading = ref(false);
     const handleResetModalOk = () => {
       resetModalLoading.value = true;
-
       user.value.password = hexMd5(user.value.password + KEY);
 
       axios.post("/user/reset-password", user.value).then((response) => {
@@ -256,6 +256,7 @@ export default defineComponent({
     const resetPassword = (record: any) => {
       resetModalVisible.value = true;
       user.value = Tool.copy(record);
+      // 重置密码时，清空密码框
       user.value.password = null;
     };
 
@@ -285,10 +286,10 @@ export default defineComponent({
 
       handleDelete,
 
+      resetPassword,
       resetModalVisible,
       resetModalLoading,
-      handleResetModalOk,
-      resetPassword
+      handleResetModalOk
     }
   }
 });

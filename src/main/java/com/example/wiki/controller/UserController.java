@@ -1,6 +1,7 @@
 package com.example.wiki.controller;
 
 import com.example.wiki.req.UserQueryReq;
+import com.example.wiki.req.UserResetPasswordReq;
 import com.example.wiki.req.UserSaveReq;
 import com.example.wiki.resp.CommonResp;
 import com.example.wiki.resp.UserQueryResp;
@@ -67,6 +68,22 @@ public class UserController {
         CommonResp<List<UserQueryResp>> resp = new CommonResp<>();
         List<UserQueryResp> list = userService.all(userQueryReq);
         resp.setContent(list);
+        return resp;
+    }
+
+
+    /**
+     * 重置密码
+     *
+     * @param req
+     * @return
+     */
+    @PostMapping("/reset-password")
+    public CommonResp restPassword(@Valid @RequestBody UserResetPasswordReq req) {
+        CommonResp resp = new CommonResp();
+        // 这里使用的是Spring自带的工具类,对密码进行MD5加密
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
+        userService.resetPassword(req);
         return resp;
     }
 

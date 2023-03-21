@@ -6,6 +6,7 @@ import com.example.wiki.exception.BusinessException;
 import com.example.wiki.exception.BusinessExceptionCode;
 import com.example.wiki.mapper.UserMapper;
 import com.example.wiki.req.UserQueryReq;
+import com.example.wiki.req.UserResetPasswordReq;
 import com.example.wiki.req.UserSaveReq;
 import com.example.wiki.resp.UserQueryResp;
 import com.example.wiki.resp.PageResp;
@@ -93,9 +94,15 @@ public class UserService {
         }
     }
 
+
+    public void resetPassword(UserResetPasswordReq req) {
+        // 将 req 对象复制到 User 对象中,只复制密码,其他字段都为空,所以不会更新其他字段
+        User user = CopyUtil.copy(req, User.class);
+        userMapper.updateByPrimaryKeySelective(user);
+    }
+
     public void delete(Long id) {
         userMapper.deleteByPrimaryKey(id);
-
     }
 
     /**
