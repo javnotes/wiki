@@ -87,7 +87,7 @@ public class UserService {
         } else {
             // 更新,用户名不可更新，所以设置为空，防止被更新
             user.setLoginName(null);
-            userMapper.updateByPrimaryKey(user);
+            userMapper.updateByPrimaryKeySelective(user);
         }
     }
 
