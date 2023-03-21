@@ -6,6 +6,7 @@ import com.example.wiki.resp.CommonResp;
 import com.example.wiki.resp.UserQueryResp;
 import com.example.wiki.resp.PageResp;
 import com.example.wiki.service.UserService;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -35,12 +36,15 @@ public class UserController {
 
     /**
      * 保存
+     *
      * @param req
      * @return
      */
     @PostMapping("/save")
     public CommonResp save(@Valid @RequestBody UserSaveReq req) {
         CommonResp resp = new CommonResp();
+        // 这里使用的是Spring自带的工具类,对密码进行MD5加密
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
         userService.save(req);
         return resp;
     }

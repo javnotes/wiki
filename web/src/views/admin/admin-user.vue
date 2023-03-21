@@ -92,7 +92,7 @@ import {defineComponent, onMounted, ref} from 'vue';
 import axios from 'axios';
 import {message} from 'ant-design-vue';
 import {Tool} from "@/util/tool";
-
+//虽然已引入js，但是ts还是会报错，所以这里声明一下，不影响使用
 declare let hexMd5: any;
 declare let KEY: any;
 
@@ -175,6 +175,7 @@ export default defineComponent({
     const handleModalOk = () => {
       modalLoading.value = true;
 
+      // 密码加密,前端一次加密，后端一次加密
       user.value.password = hexMd5(user.value.password + KEY);
 
       axios.post("/user/save", user.value).then((response) => {
