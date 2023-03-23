@@ -1,6 +1,6 @@
 <template>
   <a-layout-footer style="text-align: center">
-    Ant の 电子书 <span v-show="user.id">，欢迎：{{ user.name }}</span>
+    Ant の 电子书 <span v-show="user.id">，欢迎：{{user.name}}</span>
   </a-layout-footer>
 </template>
 
@@ -12,6 +12,10 @@ export default defineComponent({
   name: 'the-footer',
   setup() {
     const user = computed(() => store.state.user);
+
+    return {
+      user,
+    };
   }
 });
 </script>
