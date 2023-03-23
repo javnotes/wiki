@@ -21,3 +21,13 @@ name=wiki
 ###
 
 GET http://localhost:8880/hello/list
+
+
+
+###
+GET http://localhost:8880/redis/set/123/test
+Accept: application/json
+
+###
+GET http://localhost:8880/redis/get/29454726311579648
+Accept: application/json
