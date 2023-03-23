@@ -1,13 +1,16 @@
 package com.example.wiki.service;
 
+import com.example.wiki.controller.UserController;
 import com.example.wiki.domain.User;
 import com.example.wiki.domain.UserExample;
 import com.example.wiki.exception.BusinessException;
 import com.example.wiki.exception.BusinessExceptionCode;
 import com.example.wiki.mapper.UserMapper;
+import com.example.wiki.req.UserLoginReq;
 import com.example.wiki.req.UserQueryReq;
 import com.example.wiki.req.UserResetPasswordReq;
 import com.example.wiki.req.UserSaveReq;
+import com.example.wiki.resp.UserLoginResp;
 import com.example.wiki.resp.UserQueryResp;
 import com.example.wiki.resp.PageResp;
 import com.example.wiki.util.CopyUtil;
@@ -30,6 +33,7 @@ import java.util.List;
 public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
     @Resource
     private UserMapper userMapper;
 
@@ -121,6 +125,32 @@ public class UserService {
             return userList.get(0);
         } else {
             return null;
+        }
+    }
+
+    /**
+     * 登录
+     *
+     * @param req
+     * @return
+     */
+    public UserLoginResp login(UserLoginReq req) {
+        User userDB = selectByLoginName(req.getLoginName());
+        if (ObjectUtils.isEmpty(userDB)) {
+            // 用户名不存在
+            logger.info("用户名不存在: {}", req.getLoginName());
+            throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
+        } else {
+            if (userDB.getPassword().equals(req.getPassword())) {
+                // 登录成功
+                logger.info("登录成功: {}", req.getLoginName());
+                UserLoginResp userLoginResp = CopyUtil.copy(userDB, UserLoginResp.class);
+                return userLoginResp;
+            } else {
+                // 密码错误
+                logger.info("密码错误: {}，输入密码：{}", req.getLoginName(), req.getPassword());
+                throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
+            }
         }
     }
 }

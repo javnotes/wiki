@@ -1,9 +1,11 @@
 package com.example.wiki.controller;
 
+import com.example.wiki.req.UserLoginReq;
 import com.example.wiki.req.UserQueryReq;
 import com.example.wiki.req.UserResetPasswordReq;
 import com.example.wiki.req.UserSaveReq;
 import com.example.wiki.resp.CommonResp;
+import com.example.wiki.resp.UserLoginResp;
 import com.example.wiki.resp.UserQueryResp;
 import com.example.wiki.resp.PageResp;
 import com.example.wiki.service.UserService;
@@ -71,7 +73,6 @@ public class UserController {
         return resp;
     }
 
-
     /**
      * 重置密码
      *
@@ -87,5 +88,13 @@ public class UserController {
         return resp;
     }
 
-
+    @PostMapping("/login")
+    public CommonResp login(@Valid @RequestBody UserLoginReq req) {
+        // 这里使用的是Spring自带的工具类,对密码再次进行MD5加密
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
+        CommonResp<UserLoginResp> resp = new CommonResp<>();
+        UserLoginResp userLoginResp = userService.login(req);
+        resp.setContent(userLoginResp);
+        return resp;
+    }
 }

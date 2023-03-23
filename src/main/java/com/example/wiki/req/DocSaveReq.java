@@ -1,5 +1,6 @@
 package com.example.wiki.req;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -9,16 +10,16 @@ import javax.validation.constraints.NotNull;
 public class DocSaveReq {
     private Long id;
 
-    @NotNull(message = "电子书不能为空")
+    @NotEmpty(message = "电子书不能为空")
     private Long ebookId;
 
-    @NotNull(message = "父文档不能为空")
+    @NotEmpty(message = "父文档不能为空")
     private Long parent;
 
-    @NotNull(message = "名称不能为空")
+    @NotEmpty(message = "名称不能为空")
     private String name;
 
-    @NotNull(message = "排序不能为空")
+    @NotEmpty(message = "排序不能为空")
     private Integer sort;
 
     private Integer viewCount;
