@@ -125,5 +125,13 @@ public class UserController {
         return resp;
     }
 
+    @GetMapping("/logout/{token}")
+    public CommonResp logout(@PathVariable String token) {
+        CommonResp resp = new CommonResp();
+        // 从redis中删除token，直接删除，不需要判断是否存在，因为如果不存在，也不会报错，直接返回null
+        redisTemplate.delete(token);
+        logger.info("token:{}已删除", token);
+        return resp;
+    }
 
 }
