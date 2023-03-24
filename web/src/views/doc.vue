@@ -25,11 +25,14 @@
           </div>
           <!--普通的html，与wangEditor无关-->
           <div class="wangeditor" :innerHTML="html"></div>
+
+          <!--前端增加点赞按钮，点击时调用点赞接口 -->
           <div class="vote-div">
             <a-button type="primary" shape="round" :size="'large'" @click="vote">
               <template #icon><LikeOutlined /> &nbsp;点赞：{{doc.voteCount}} </template>
             </a-button>
           </div>
+
         </a-col>
       </a-row>
     </a-layout-concent>
@@ -106,7 +109,7 @@ export default defineComponent({
             // 根据节点去加载内容
             handleQueryContent(level1.value[0].id);
 
-            //初始显示文档信息
+            //对doc进行赋值，初始显示文档信息
             doc.value = level1.value[0];
           }
         } else {
@@ -130,6 +133,19 @@ export default defineComponent({
       }
     };
 
+    const vote = () => {
+      axios.get("/doc/vote/" + doc.value.id).then((response) => {
+        const data = response.data;
+        if (data.success) {
+          message.success("点赞成功");
+          // 点赞数+1, 通过ref响应式变量，修改doc的值，页面会自动更新
+          doc.value.voteCount = doc.value.voteCount + 1;
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+
     onMounted(() => {
       handleQuery();
     });
@@ -139,7 +155,8 @@ export default defineComponent({
       html,
       onSelect,
       defaultSelectedKeys,
-      doc
+      doc,
+      vote
     }
   }
 });
