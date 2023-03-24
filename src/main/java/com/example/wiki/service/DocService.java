@@ -5,6 +5,7 @@ import com.example.wiki.domain.Doc;
 import com.example.wiki.domain.DocExample;
 import com.example.wiki.mapper.ContentMapper;
 import com.example.wiki.mapper.DocMapper;
+import com.example.wiki.mapper.DocMapperCust;
 import com.example.wiki.req.DocQueryReq;
 import com.example.wiki.req.DocSaveReq;
 import com.example.wiki.resp.DocQueryResp;
@@ -36,6 +37,9 @@ public class DocService {
     ContentMapper contentMapper;
 
     @Resource
+    DocMapperCust docMapperCust;
+
+    @Resource
     private SnowFlake snowFlake;
 
     public PageResp<DocQueryResp> list(DocQueryReq docQueryReq) {
@@ -60,6 +64,7 @@ public class DocService {
 
     /**
      * ebookId为null，则查不到数据，可防止查出数据表中所有数据
+     *
      * @param ebookId
      * @return
      */
@@ -87,7 +92,11 @@ public class DocService {
         // 新增文档
         if (ObjectUtils.isEmpty(req.getId())) {
             doc.setId(snowFlake.nextId());
+            // 新增文档时，阅读数和点赞数都为0
+            doc.setViewCount(0);
+            doc.setVoteCount(0);
             docMapper.insert(doc);
+
             content.setId(doc.getId());
             contentMapper.insert(content);
         } else {
@@ -118,6 +127,9 @@ public class DocService {
      */
     public String findContent(Long id) {
         Content content = contentMapper.selectByPrimaryKey(id);
+        // 文档阅读数+1
+        docMapperCust.increaseViewCount(id);
+
         // 判断content是否为空，凡是返回值为对象的方法，都要判断是否为空，避免空指针异常
         if (ObjectUtils.isEmpty(content)) {
             return "";
