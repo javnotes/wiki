@@ -112,14 +112,15 @@ public class UserController {
         UserLoginResp userLoginResp = userService.login(req);
 
         logger.info("用户{}登录成功", userLoginResp.getLoginName());
+        // 生成token，类型为Long
         Long token = snowFlake.nextId();
         logger.info(token.toString());
 
-        // 将token设置到返回结果中，随用户信息返回给前端
+        // 将String类型的token设置到返回结果中，随用户信息返回给前端
         userLoginResp.setToken(token.toString());
         // token作为key，用户信息作为value存入redis中
-        // 将token和用户信息存入redis中，设置过期时间为一天
-        redisTemplate.opsForValue().set(token, JSONObject.toJSONString(userLoginResp), 3600 * 24, TimeUnit.SECONDS);
+        // 将token和用户信息存入redis中，设置过期时间为一天，注意token类型为Long，需要转换为String
+        redisTemplate.opsForValue().set(token.toString(), JSONObject.toJSONString(userLoginResp), 3600 * 24, TimeUnit.SECONDS);
 
         resp.setContent(userLoginResp);
         return resp;

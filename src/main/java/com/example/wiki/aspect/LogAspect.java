@@ -21,6 +21,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
+ * AOP拦截器：Spring框架特有的，常用于登录校验，权限校验，请求日志打印，只能拦截Controller层中的方法
  * @author luf
  * @date 2023/03/07 20:57
  **/
