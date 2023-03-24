@@ -15,8 +15,21 @@
           </a-tree>
         </a-col>
         <a-col :span="18">
+          <div>
+            <h2>{{doc.name}}</h2>
+            <div>
+              <span>阅读数：{{doc.viewCount}}</span> &nbsp; &nbsp;
+              <span>点赞数：{{doc.voteCount}}</span>
+            </div>
+            <a-divider style="height: 2px; background-color: #9999cc"/>
+          </div>
           <!--普通的html，与wangEditor无关-->
           <div class="wangeditor" :innerHTML="html"></div>
+          <div class="vote-div">
+            <a-button type="primary" shape="round" :size="'large'" @click="vote">
+              <template #icon><LikeOutlined /> &nbsp;点赞：{{doc.voteCount}} </template>
+            </a-button>
+          </div>
         </a-col>
       </a-row>
     </a-layout-concent>
@@ -40,7 +53,7 @@ export default defineComponent({
     //defaultSelectedKeys是一个响应式变量，数组
     const defaultSelectedKeys = ref();
     defaultSelectedKeys.value = [];
-    // 当前选中的文档
+    //当前选中的文档
     const doc = ref();
     doc.value = {};
 
@@ -92,6 +105,9 @@ export default defineComponent({
             defaultSelectedKeys.value = [level1.value[0].id];
             // 根据节点去加载内容
             handleQueryContent(level1.value[0].id);
+
+            //初始显示文档信息
+            doc.value = level1.value[0];
           }
         } else {
           message.error(data.message);
@@ -107,8 +123,8 @@ export default defineComponent({
     const onSelect = (selectedKeys: any, info: any) => {
       console.log('selected', selectedKeys, info);
       if (Tool.isNotEmpty(selectedKeys)) {
-        // 选中某一节点时，加载该节点的文档信息
-        // doc.value = info.selectedNodes[0].props;
+        // 选中某一节点时，就去加载该节点的文档信息
+        doc.value = info.selectedNodes[0].props;
         // 加载内容
         handleQueryContent(selectedKeys[0]);
       }
@@ -122,7 +138,8 @@ export default defineComponent({
       level1,
       html,
       onSelect,
-      defaultSelectedKeys
+      defaultSelectedKeys,
+      doc
     }
   }
 });
@@ -187,4 +204,11 @@ export default defineComponent({
   font-size: 16px !important;
   font-weight: 600;
 }
+
+/* 点赞 */
+.vote-div {
+  padding: 15px;
+  text-align: center;
+}
+
 </style>
