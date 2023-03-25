@@ -3,6 +3,8 @@ package com.example.wiki.service;
 import com.example.wiki.domain.Content;
 import com.example.wiki.domain.Doc;
 import com.example.wiki.domain.DocExample;
+import com.example.wiki.exception.BusinessException;
+import com.example.wiki.exception.BusinessExceptionCode;
 import com.example.wiki.mapper.ContentMapper;
 import com.example.wiki.mapper.DocMapper;
 import com.example.wiki.mapper.DocMapperCust;
@@ -11,6 +13,8 @@ import com.example.wiki.req.DocSaveReq;
 import com.example.wiki.resp.DocQueryResp;
 import com.example.wiki.resp.PageResp;
 import com.example.wiki.util.CopyUtil;
+import com.example.wiki.util.RedisUtil;
+import com.example.wiki.util.RequestContext;
 import com.example.wiki.util.SnowFlake;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -30,6 +34,7 @@ import java.util.List;
 public class DocService {
 
     private static final Logger logger = LoggerFactory.getLogger(DocService.class);
+
     @Resource
     private DocMapper docMapper;
 
@@ -41,6 +46,9 @@ public class DocService {
 
     @Resource
     private SnowFlake snowFlake;
+
+    @Resource
+    private RedisUtil redisUtil;
 
     public PageResp<DocQueryResp> list(DocQueryReq docQueryReq) {
 
@@ -138,7 +146,19 @@ public class DocService {
         }
     }
 
+    /**
+     * 文档点赞，点赞数+1，使用redis实现点赞数的缓存，防止用户短时间内重复点赞
+     */
     public void vote(Long id) {
-        docMapperCust.increaseVoteCount(id);
+
+        //远程IP+文档id作为redis的key，防止用户短时间内重复点赞，可设置24小时内不可重复点赞
+        //扩展：会员ID(如果有)可以作为redis的key，防止会员短时间内重复点赞，可设置24小时内不可重复点赞
+        String ip = RequestContext.getRemoteAddr();
+
+        if (redisUtil.validateRepeat("DOC_VOTE" + id + "_" + ip, 24 * 60 * 60)) {
+            docMapperCust.increaseVoteCount(id);
+        } else {
+            throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT_ERROR);
+        }
     }
 }
