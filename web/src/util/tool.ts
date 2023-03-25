@@ -54,20 +54,19 @@ export class Tool {
     }
 
     /**
-     * 随机生成[len]长度的[radix]进制数
-     * @param len
-     * @param radix 默认62
-     * @returns {string}
+     * 随机生成[len]长度的[radix]进制数，radix默认62，即大小写字母+数字，
+     * 用于生成短链接，短ID等，比如生成6位的短链接，可用于短信分享，短信登录等
      */
     public static uuid(len: number, radix = 62) {
         const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
         const uuid = [];
         radix = radix || chars.length;
 
+        // 生成随机数
         for (let i = 0; i < len; i++) {
+            // 0 | Math.random() * radix 生成0到radix之间的随机数
             uuid[i] = chars[0 | Math.random() * radix];
         }
-
         return uuid.join('');
     }
 }
