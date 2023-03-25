@@ -16,6 +16,7 @@ import com.example.wiki.util.CopyUtil;
 import com.example.wiki.util.RedisUtil;
 import com.example.wiki.util.RequestContext;
 import com.example.wiki.util.SnowFlake;
+import com.example.wiki.websocket.WebSocketServer;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -49,6 +50,9 @@ public class DocService {
 
     @Resource
     private RedisUtil redisUtil;
+
+    @Resource
+    private WebSocketServer webSocketServer;
 
     public PageResp<DocQueryResp> list(DocQueryReq docQueryReq) {
 
@@ -148,6 +152,7 @@ public class DocService {
 
     /**
      * 文档点赞，点赞数+1，使用redis实现点赞数的缓存，防止用户短时间内重复点赞
+     * 点赞后，使用websocket向前端推送消息
      */
     public void vote(Long id) {
 
@@ -160,6 +165,11 @@ public class DocService {
         } else {
             throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT_ERROR);
         }
+
+        // 组装消息，使用websocket向前端推送消息
+        Doc docDB = docMapper.selectByPrimaryKey(id);
+        webSocketServer.sendInfo( "【" + docDB.getName() + "】被点赞");
+
     }
 
     public void updateEbookInfo() {
