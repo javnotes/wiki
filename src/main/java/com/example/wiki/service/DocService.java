@@ -161,4 +161,8 @@ public class DocService {
             throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT_ERROR);
         }
     }
+
+    public void updateEbookInfo() {
+        docMapperCust.updateEbookInfo();
+    }
 }
