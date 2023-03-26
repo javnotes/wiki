@@ -185,7 +185,7 @@ export default defineComponent({
         console.log("树型结构：", level1);
 
         // 初始化父文档下拉框，使其默认显示数据
-        treeSelectData.value = Tool.copy(level1.value);
+        treeSelectData.value = Tool.copy(level1.value) || [];
         //为选择树添加一个『无』，treeSelectData 是选项下拉框的数据，所以需要在这里添加
         treeSelectData.value.unshift({id: 0, name: "无"});
       });
@@ -279,11 +279,11 @@ export default defineComponent({
     const add = () => {
       editor.txt.html("");
       // modalVisible.value = true;
-      // doc.value = {
-      //   ebookId: route.query.ebookId
-      // };
+      doc.value = {
+        ebookId: route.query.ebookId
+      };
 
-      treeSelectData.value = Tool.copy(level1.value);
+      treeSelectData.value = Tool.copy(level1.value) || []
       //为选择树添加一个『无』
       treeSelectData.value.unshift({
         id: 0,

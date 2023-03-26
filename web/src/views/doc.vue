@@ -1,6 +1,6 @@
 <template>
   <a-layout>
-    <a-layout-concent :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }">
+    <a-layout-content :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }">
       <h2 v-if="level1.length === 0" style="text-align:center">＿|￣|● 未查询到相关文档</h2>
       <a-row>
         <a-col :span="6">
@@ -35,7 +35,7 @@
 
         </a-col>
       </a-row>
-    </a-layout-concent>
+    </a-layout-content>
   </a-layout>
 </template>
 
