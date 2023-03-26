@@ -21,6 +21,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -52,7 +53,7 @@ public class DocService {
     private RedisUtil redisUtil;
 
     @Resource
-    private WebSocketServer webSocketServer;
+    private WsService wsService;
 
     public PageResp<DocQueryResp> list(DocQueryReq docQueryReq) {
 
@@ -160,7 +161,7 @@ public class DocService {
         //扩展：会员ID(如果有)可以作为redis的key，防止会员短时间内重复点赞，可设置24小时内不可重复点赞
         String ip = RequestContext.getRemoteAddr();
 
-        if (redisUtil.validateRepeat("DOC_VOTE" + id + "_" + ip, 24 * 60 * 60)) {
+        if (redisUtil.validateRepeat("DOC_VOTE" + id + "_" + ip, 10)) {
             docMapperCust.increaseVoteCount(id);
         } else {
             throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT_ERROR);
@@ -168,8 +169,7 @@ public class DocService {
 
         // 组装消息，使用websocket向前端推送消息
         Doc docDB = docMapper.selectByPrimaryKey(id);
-        webSocketServer.sendInfo( "【" + docDB.getName() + "】被点赞");
-
+        wsService.sendInfo("【" + docDB.getName() + "】被点赞");
     }
 
     public void updateEbookInfo() {
