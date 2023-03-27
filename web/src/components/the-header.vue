@@ -1,7 +1,7 @@
 the-header.vue
 <template>
   <a-layout-header class="header">
-    <div class="logo"> wiki 知识库</div>
+    <div class="logo"> 犇时 の 知识库</div>
     <a-menu
         theme="dark"
         mode="horizontal"
