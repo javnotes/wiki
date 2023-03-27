@@ -19,7 +19,7 @@
         <router-link to="/admin/category">分类管理</router-link>
       </a-menu-item>
       <a-menu-item key="/about">
-        <router-link to="/about">关于我们</router-link>
+        <router-link to="/about">关于本站</router-link>
       </a-menu-item>
       <a class="login-menu" v-show="!user.id" @click="showLoginModal">
         <span>登录</span>

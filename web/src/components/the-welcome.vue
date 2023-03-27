@@ -106,6 +106,7 @@ export default defineComponent({
       axios.get('/ebook-snapshot/get-statistic').then((response) => {
         const data = response.data;
         if (data.success) {
+          //statisticResp为临时变量，statisticResp[0]：昨日数据，statisticResp[1]：今日数据
           const statisticResp = data.content;
           statistic.value.viewCount = statisticResp[1].viewCount;
           statistic.value.voteCount = statisticResp[1].voteCount;

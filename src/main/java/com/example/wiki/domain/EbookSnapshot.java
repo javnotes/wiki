@@ -8,13 +8,13 @@ public class EbookSnapshot {
     private Long ebookId;
 
     private Date date;
-
+    // 阅读数
     private Integer viewCount;
-
+    // 点赞数
     private Integer voteCount;
-
+    // 阅读数增量
     private Integer viewIncrease;
-
+    // 点赞数增量
     private Integer voteIncrease;
 
     public Long getId() {
