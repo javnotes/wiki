@@ -80,7 +80,7 @@ import TheWelcome from '@/components/the-welcome.vue';
 export default defineComponent({
   name: 'Home',
   components: {
-    TheWelcome,
+    TheWelcome
   },
   setup() {
     const ebooks = ref();

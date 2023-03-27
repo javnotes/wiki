@@ -15,7 +15,7 @@ import javax.annotation.Resource;
  * @date 2023/03/07 20:47
  **/
 @Configuration
-public class SpringMcvConfig implements WebMvcConfigurer {
+public class SpringMvcConfig implements WebMvcConfigurer {
     @Resource
     private LoginInterceptor loginInterceptor;
 
