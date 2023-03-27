@@ -120,7 +120,7 @@ public class UserController {
         userLoginResp.setToken(token.toString());
         // token作为key，用户信息作为value存入redis中
         // 将token和用户信息存入redis中，设置过期时间为一天，注意token类型为Long，需要转换为String
-        redisTemplate.opsForValue().set(token.toString(), JSONObject.toJSONString(userLoginResp), 3600 * 24, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(token.toString(), JSONObject.toJSONString(userLoginResp), 30, TimeUnit.SECONDS);
 
         resp.setContent(userLoginResp);
         return resp;

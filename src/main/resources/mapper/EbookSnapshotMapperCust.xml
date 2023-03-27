@@ -37,6 +37,7 @@
         where t1.`date` = curdate();
     </update>
 
+    <!--查询出两条记录，第一条是昨天的，第二条是今天的-->
     <select id="getStatistic" resultType="com.example.wiki.resp.StatisticResp">
         select
         t1.`date` as `date`,
@@ -47,7 +48,7 @@
         from ebook_snapshot t1
         where t1.`date` >= date_sub(curdate(), interval 1 day)
         group by t1.`date`
-        order by t1.`date` desc;
+        order by t1.`date` asc;
     </select>
 
 </mapper>
