@@ -7,9 +7,12 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.Resource;
 
+
+/**
+ * 电子书快照定时任务，生成今日电子书快照
+ */
 @Component
 public class EbookSnapshotJob {
 
@@ -34,5 +37,4 @@ public class EbookSnapshotJob {
         ebookSnapshotService.genSnapshot();
         LOG.info("生成今日电子书快照结束，耗时：{}毫秒", System.currentTimeMillis() - start);
     }
-
 }
