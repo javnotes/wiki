@@ -48,7 +48,7 @@ public class TestController {
 
     @RequestMapping("/redis/set/{key}/{value}")
     public String set(@PathVariable Long key, @PathVariable String value) {
-        redisTemplate.opsForValue().set(key, value, 60, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(key, value, 60 * 60, TimeUnit.SECONDS);
         logger.info("key: {}, value: {}", key, value);
         return "success";
     }
