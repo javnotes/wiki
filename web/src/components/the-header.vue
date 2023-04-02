@@ -2,13 +2,20 @@ the-header.vue
 <template>
   <a-layout-header class="header">
     <div class="logo"> 犇时 の 知识库</div>
+    <a class="login-menu" v-show="!user.id" @click="showLoginModal">
+      <span>登录</span>
+    </a>
     <a-menu
         theme="dark"
         mode="horizontal"
         :style="{ lineHeight: '64px' }"
     >
+
       <a-menu-item key="/">
         <router-link to="/">首页</router-link>
+      </a-menu-item>
+      <a-menu-item key="/about">
+        <router-link to="/about">关于本站</router-link>
       </a-menu-item>
       <a-menu-item key="/admin/user" :style="user.id? {} : {display:'none'}">
         <router-link to="/admin/user">用户管理</router-link>
@@ -19,12 +26,6 @@ the-header.vue
       <a-menu-item key="/admin/category" :style="user.id? {} : {display:'none'}">
         <router-link to="/admin/category">分类管理</router-link>
       </a-menu-item>
-      <a-menu-item key="/about">
-        <router-link to="/about">关于本站</router-link>
-      </a-menu-item>
-      <a class="login-menu" v-show="!user.id" @click="showLoginModal">
-        <span>登录</span>
-      </a>
       <a-popconfirm
           title="确认退出登录?"
           ok-text="是"
@@ -63,6 +64,7 @@ import {computed, defineComponent, ref} from 'vue';
 import axios from "axios";
 import {message} from "ant-design-vue";
 import store from "@/store";
+import router from "@/router";
 
 declare let hexMd5: any;
 declare let KEY: any;
@@ -113,6 +115,8 @@ export default defineComponent({
           message.success("退出登录成功！");
           // 清空用户信息, 赋值空对象，避免空指针异常
           store.commit("setUser", {});
+          // 退出登录后，设置路由为首页
+          router.push('/');
         } else {
           message.error(data.message);
         }
@@ -138,7 +142,7 @@ export default defineComponent({
   width: 120px;
   height: 31px;
   /*background: rgba(255, 255, 255, 0.2);*/
-  margin: 16px 28px 16px 50px;
+  /*margin: 16px 28px 16px 50px;*/
   float: left;
   color: white;
   font-size: 18px;
