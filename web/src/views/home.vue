@@ -28,7 +28,7 @@
       <div class="welcome" v-show="isShowWelcome">
         <the-welcome></the-welcome>
       </div>
-      <a-list v-show="!isShowWelcome" item-layout="vertical" size="large" grid="{ gutter: 20, column: 3 }"
+      <a-list v-show="!isShowWelcome" item-layout="vertical" size="large" :grid="{ gutter: 20, column: 3 }"
               :data-source="ebooks">
         <template #renderItem="{ item }">
           <a-list-item key="item.name">
